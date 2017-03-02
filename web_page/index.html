@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+	<title>Coffee Shop</title>
+	
+
+	<!-- allows for the styling of font-awesome -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<!-- library for angular -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="page.css">
+	<script type="text/javascript" src="page.js"></script>
+</head>
+<body id="fade-in">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<!-- The stuff here only shows up when the screen is reduced to the size of an ~8' tablet screen -->
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>				
+				</button>
+				<a class="navbar-brand">Coffee Shop</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li class="change-page" title="home"><a>Home</a></li>
+					<li class="change-page" title="history"><a>History</a></li>
+					<li class="change-page" title="team"><a>The Team</a></li>
+					<li class="change-page" title="story"><a>Our Story</a></li>
+					<li class="change-page" title="signUp"><a>Sign up</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="view-port" ></div>
+	<audio>
+		<source src="sounds/XP/start.wav"></source>
+	</audio>
+	<script type="text/javascript">
+		var audio = $("audio")[0];
+		audio.play();
+	</script>
+</body>
+</html>

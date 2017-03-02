@@ -1,0 +1,12 @@
+body {
+	background-image: url("img/background.jpg");
+	margin: auto;
+}
+
+h1, h3{
+	text-align: center;
+}
+
+a:hover {
+	cursor: pointer;
+}
