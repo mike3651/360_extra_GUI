@@ -15,6 +15,14 @@
 	<!-- library for angular -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
+	<!-- FOR GOOGLE GEO LOCATION -->    
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+	<!-- THIS WILL BE USED FOR THE MAPPING -->
+	 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+
+	  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="page.css">
 	<script type="text/javascript" src="page.js"></script>
 </head>
@@ -33,15 +41,54 @@
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav">
 					<li class="change-page" title="home"><a>Home</a></li>
-					<li class="change-page" title="history"><a>History</a></li>
-					<li class="change-page" title="team"><a>The Team</a></li>
-					<li class="change-page" title="story"><a>Our Story</a></li>
-					<li class="change-page" title="signUp"><a>Sign up</a></li>
+					<li class="change-page" title="history"><a>Coffee Shop</a></li>
+<!-- 					<li class="change-page" title="team"><a>The Team</a></li>
+					<li class="change-page" title="story"><a>NULL</a></li> -->
+					<li class="change-page" title="signUp"><a>Users</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 	<div id="view-port" ></div>
+	<div class="container-fluid">
+		<!-- <div class="row">
+			<div class="col-sm-12">
+				<form>
+					<div class="form-group">
+						<label for="user-id">User ID</label>
+						<input type="text" class="form-control" id="email" title="Name"/>
+					</div>	
+					<div class="form-group">
+						<label for="business-name">Name</label>
+						<input type="text" class="form-control" id="email" title="Name"/>
+					</div>					
+					<div class="form-group">
+						<label for="business-state">ZIP code</label>
+						<input type="text" class="form-control" id="zip" title="ZIP code" />
+					</div>			
+					<div class="form-group">
+						<label for="business-owner">Business Owner</label>
+						<input type="text" class="form-control" id="owner" title="Title"/>
+					</div>
+					<div class="form-group">
+						<label for="business-owner">Owner email</label>
+						<input type="email" class="form-control" id="owner-email" title="Email"/>
+					</div>
+					<div class="form-group">
+						<label for="business-message">Message</label>
+						<input type="text" class="form-control" id="message" title="Message"/>
+					</div>
+					<button id="shop-submission" type="submit" class="btn btn-default">Create User</button>
+					<button id="get-message-data" class="btn btn-default">Get message data</button>
+				</form>			
+			</div>
+		</div> -->		
+	</div>
+	<div id="table-data"></div>
+	<!-- THIS SEGMENT DEALS WITH LOOKING AT A SPECIFIC BUSINESS -->
+	<div id="test">
+	</div>
+
 	<audio>
 		<source src="sounds/XP/start.wav"></source>
 	</audio>
