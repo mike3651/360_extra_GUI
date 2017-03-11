@@ -1,43 +1,17 @@
 (function() {
 	// this keeps track of all the JSON objects that we currently have
-	JSON_OBJECTS_USERS = [];
-	JSON_OBJECTS_SHOPS = [];
+	var JSON_OBJECTS_USERS = [];
+	var JSON_OBJECTS_SHOPS = [];
+
+	// keeps track of the shop ids
+	var shop_ids = [];
+
+	// keeps track of the review ids
+	var review_ids = [];
 
 	// checks to see if we can generate a map
 	var map_okay = true;
 	var container_made = false;
-
-	// creates a psuedo message class
-	var coffee_shop = function() {
-		name = "",
-		owner = "",
-		employees = [];
-		address = "",
-		phone = "",
-		update = function(employee) {
-			employees.push(employee);
-		}
-	}
-
-	// creates a psuedo message class
-	var employee = function() {
-		name = "",
-		business_affiliations = [],
-		phone = "",
-		update = function(business) {
-			business_affiliations.push(business);
-		}
-	}
-
-	// creates a psuedo message class
-	var message = function() {
-		person = "",
-		date = "",
-		message = ""
-		update = function(new_message) {
-			message = new_message;
-		}			
-	}
 
 	window.onload = function() {
 		var list = document.getElementsByClassName("change-page");
@@ -46,47 +20,286 @@
 		}
 		$("#view-port").load("home.html");		
 		$("#fade-in").hide().fadeIn(2500);		
-
-		$("body").bind("DOMSubtreeModified", function() {
-			var forms = document.getElementsByTagName("form");
-			for(var i = 0; i < forms.length; i++) {
-				$(forms[i]).submit(function(e) {
-					e.preventDefault();
-					getInformation(this.id);
-					console.log("form submitted");		
-			});
-			}		
-		});
-		// $("form").submit(function(e) {
-		// 	alert("here");
-		// 	e.preventDefault();
-		// 	getInformation();
-		// });
+		
 		$("#get-user-message-data").click(function() {			
 			getMessages();
 		});	
 
-		$("#get-JSON").click(function(){
-			getStarted();
-		});
+		// shopInformation();
+		// reviewInformation();
 	}
 
-	function getStarted() {
-		alert("here");
-		var ajax = new XMLHttpRequest();
-		ajax.onload = getJSON;
-		ajax.open("GET", "https://gentle-coast-59786.herokuapp.com/tcss360/coffeeShop/api/shops", false);
-		ajax.send();
-	}
-
-	function getJSON() {
-		alert(this.status);
-	}
-
-
+	// function that toggles between pages
 	function linkPage() {	
 		// get the target div
 		$("#view-port").load($(this).attr("title") + ".html");	
+		//alert($("form"));
+				
+		// need this alert to allow for load pause
+		alert($(this).attr("title") + " page loaded");
+
+		// LOAD THE IDs
+		// alert($(this).attr("title") == "review");
+		// check for review
+		if($(this).attr("title") == "review") {
+			$("#review-id").val(createId($(this).attr("title")));
+			//alert($("#review-id").val());
+		}
+
+		// check for shop
+		if($(this).attr("title") == "shop") {
+			var id = createId($(this).attr("title"));
+			// console.log("actual id returned: " + id);
+			// console.log("shop-id value before: " + $("#shop-id").val());
+			// console.log("shop input object: " + $("#shop-id"));
+			document.getElementById("shop-id").value = id;
+			//$("#shop-id").val(id);			
+			//console.log("shop-id value after: " + $("#shop-id").val());
+			//alert($("#shop-id").val());
+		}
+
+		$("form").submit(function(e) {
+			e.preventDefault();
+			if($("form").attr("id") == "shop"){
+				//alert("shop submission");
+			}
+
+			if($("form").attr("id") == "review") {
+				//alert("review submitted");
+			}
+
+			if($("form").attr("id") == "user") {
+				//alert("user registered");
+			}
+
+			//getInformation(this.id);
+			//console.log("form submitted");	
+		});
+	}
+
+	// function that generates an ID
+	// param -> type : The type of object to link the id to
+	// return -> id : The identification of this object
+	function createId(type) {
+		//console.log("creating an ID");
+		// generaes a random ID from 100 - 999
+		var id = Math.floor(Math.random() * 899) + 100;
+		while(!verifyUniqueId(type, id)) {
+			id = Math.floor(Math.random() * 899) + 100;
+		}
+		//console.log("value of id: " + id);
+		return id;
+	}
+
+	// function that determines as to whether or not an id has been taken
+	// return -> ID exists ? false : true
+	function verifyUniqueId(type, id) {
+		if(type == "shop") {
+			for(var i = 0; i < shop_ids.length; i++) {
+				if(id == shop_ids[i]) {
+					return false;
+				}
+			}			
+		} else {
+			for(var i = 0; i < review_ids.length; i++) {
+				if(id == review_ids[i]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+	// this segment of code deals with all of the button clicks to the shops page
+	// it links up all of the buttons under the shop html to the appropriate requests
+	function shopInformation() {
+		$("#shop-submission").click(function(){			
+			// generic URL
+			var url = "/";
+			var shop = makeShopObject();
+
+			if(confirm("Are you sure you want to make this shop?")){
+				$.ajax({
+					type: 'POST',
+					url: url,
+					datatype: 'json',
+					data: JSON.stringify(shop),
+					contentType: 'application/json',
+					success: render_newshop
+				});
+			} 	
+		});
+
+		// deals with updating the shop
+		$("#update-shop").click(function(){
+			var shop = makeShopObject();
+
+			// generic URL
+			var url = "/";					
+
+			if(confirm("Are you sure you want to update this shop?")){
+				$.ajax({
+					type: 'PUT',
+					url: url,
+					datatype: 'json',
+					data: JSON.stringify(shop),
+					contentType: 'application/json',
+					success: render_clear_review
+				});
+			}
+		});
+
+		$("#delete-shop").click(function(){
+			var title = document.getElementById("shop-id");
+			var shop = {'shopid': parseInt(title.value)};
+			var url = '/' + title.value;
+
+			if(confirm("Are you sure you want to delete this shop?")) {
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					datatype: 'json',
+					data: JSON.stringify(shop),
+					success: render_delete_shop
+				});
+			}
+		});
+
+		$("#get-shop-data").click(function(){
+			var shop_name = document.getElementById("shop-id");
+			
+			// relative URL to use
+			var url = '/' + shop_name.value;
+
+			// make the request to get the data
+			$.ajax({
+				type: 'GET',
+				url: url,
+				datatype: 'json',
+				success: makeTable_shop
+			});
+		});
+	}
+
+	// function that creates a shop object and returns it
+	function makeShopObject() {
+		// STRINGS
+		var name = document.getElementById("shop-title");
+		var city = document.getElementById("shop-city");
+		var state = document.getElementById("shop-state");
+		var number = document.getElementById("shop-number");
+		var description = document.getElementById("shop-description");
+		var open = document.getElementById("shop-open");
+		var close = document.getElementById("shop-close");
+
+		// INTEGERS		
+		var zip = document.getElementById("shop-zip");		
+		var id = document.getElementById("shop-id");
+
+		// create the object, JSON objects are nothing more than strings
+		var shop = {
+			"id" : id.value,
+			"name" : name.value,
+			"city" : city.value,
+			"state" : state.value,
+			"zip" : zip.value,
+			"number" : number.value,
+			"description" : description.value,
+			"open" : open.value,
+			"close" : close.value
+		};
+		return shop;
+	}
+
+	// this segment of code deals with all of the button clicks to the reviews page
+	// it links up all of the buttons under the review html to the appropriate requests
+	function reviewInformation() {
+		$("#review-submission").click(function(){
+			// generic URL
+			var url = "/";
+			var review = makeReviewObject();
+
+			if(confirm("Are you sure you want to make this review?")){
+				$.ajax({
+					type: 'POST',
+					url: url,
+					datatype: 'json',
+					data: JSON.stringify(review),
+					contentType: 'application/json',
+					success: render_newreview
+				});
+			} 	
+		});
+		
+		$("#update-review").click(function(){
+			var review = makeReviewObject();
+
+			// generic URL
+			var url = "/";					
+
+			if(confirm("Are you sure you want to update this review?")){
+				$.ajax({
+					type: 'PUT',
+					url: url,
+					datatype: 'json',
+					data: JSON.stringify(review),
+					contentType: 'application/json',
+					success: render_clear_review
+				});
+			}
+		});
+		
+		$("#delete-review").click(function(){
+			var title = document.getElementById("review-id");
+			var review = {'reviewid': parseInt(title.value)};
+			var url = '/' + title.value;
+
+			if(confirm("Are you sure you want to delete this review?")) {
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					datatype: 'json',
+					data: JSON.stringify(review),
+					success: render_delete_shop
+				});
+			}
+		});
+
+		$("#get-review-data").click(function(){
+			var review_id = document.getElementById("review-id");
+			
+			// relative URL to use
+			var url = 'tcss360/reviews/' + review_id;
+
+			// make the request to get the data
+			$.ajax({
+				type: 'GET',
+				url: url,
+				datatype: 'json',
+				success: makeTable_review
+			});
+		});
+	}
+
+	// function that makes a review object and returns it
+	function makeReviewObject() {
+		// STRING		
+		var message = document.getElementById("review-message");
+
+		// INTEGERS
+		var id = document.getElementById("review-id");
+		var shop_id = document.getElementById("review-shop-id");
+		var rating = document.getElementById("review-rating");
+
+		// generate the review object
+		var review = {
+			"id": id.value,
+			"shopid": shop_id.value,
+			"message": message.value,
+			"rating": rating.value
+		}
+		return review;
 	}
 
 	// function that extracts information from the form field
@@ -111,7 +324,6 @@
 
 		if(form_type == "user") {	
 			// for the geo location using google's api
-			// var geocoder = new google.maps.Geocoder();		
 			
 			if(!container_made) {
 				// create the container object
@@ -188,4 +400,5 @@
 		// map_okay = true;
 		// console.log("map status: " + map_okay);	
 	}
+	
 })();

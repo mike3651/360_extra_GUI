@@ -1,0 +1,29 @@
+<h3>Like a shop?!? Rate it! Hate it? Rate it!</h3>
+<div ng-app="myApp" ng-controller="formCtrl">
+	<div class="row">
+		<div class="col-sm-12">
+			<form id="review">	
+				<div class="form-group">
+					<label for="review-id">Review ID</label>
+					<input type="number" class="form-control" id="review-id" title="review-id"  disabled/>
+				</div>					
+				<div class="form-group">
+					<label for="review-shop-id">Shop ID</label>
+					<input type="number" class="form-control" id="review-shop-id" title="shop-id"/>
+				</div>										
+				<div class="form-group">
+					<label for="review-rating">Rating</label>
+					<input type="number" class="form-control" id="review-rating" title="rating"/>
+				</div>
+				<div class="form-group">
+					<label for="review-message">Message</label>
+					<input type="text" class="form-control" id="review-message" title="Message"/>
+				</div>
+				<button id="review-submission" type="submit" class="btn btn-default">Create review</button>
+				<button id="update-reivew" class="btn btn-default">Update review</button>
+				<button id="delete-review" type="submit" class="btn btn-default">Delete review</button>
+				<button id="get-review-data" class="btn btn-default">Get review data</button>
+			</form>			
+		</div>
+	</div>
+</div>
